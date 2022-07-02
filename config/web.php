@@ -1,10 +1,18 @@
 <?php
 
-$params = require __DIR__ . '/params.php';
+use \yii\web\Request;
+
 $db = require __DIR__ . '/db.php';
+$params = require __DIR__ . '/params.php';
+$rules = require __DIR__ . '/rules.php';
+
+if (file_exists(__DIR__ . './func.php')) {
+    require_once (__DIR__ . './func.php');
+}
 
 $config = [
-    'id' => 'basic',
+    'id' => 'astashenkov',
+    'name' => 'astashenkov.ru',
     'basePath' => dirname(__DIR__),
     'bootstrap' => ['log'],
     'aliases' => [
@@ -13,6 +21,7 @@ $config = [
     ],
     'components' => [
         'request' => [
+            'baseUrl' => str_replace('/web', '', (new Request)->getBaseUrl()),
             // !!! insert a secret key in the following (if it is empty) - this is required by cookie validation
             'cookieValidationKey' => 'vhjrlJUHTv-TADAZNxqMlkIMtQ60ufDb',
         ],
@@ -24,7 +33,7 @@ $config = [
             'enableAutoLogin' => true,
         ],
         'errorHandler' => [
-            'errorAction' => 'site/error',
+            'errorAction' => 'frontend/site/error',
         ],
         'mailer' => [
             'class' => 'yii\swiftmailer\Mailer',
@@ -43,14 +52,14 @@ $config = [
             ],
         ],
         'db' => $db,
-        /*
         'urlManager' => [
-            'enablePrettyUrl' => true,
+            'class' => 'yii\web\UrlManager',
+            // Disable index.php
             'showScriptName' => false,
-            'rules' => [
-            ],
+            // Disable r= routes
+            'enablePrettyUrl' => true,
+            'rules' => $rules,
         ],
-        */
     ],
     'params' => $params,
 ];
