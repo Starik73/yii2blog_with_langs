@@ -1,6 +1,8 @@
 <?php
 
-use \yii\web\Request;
+use yii\web\Request;
+
+defined('SITE_LANG') or define ('SITE_LANG', 'ru');
 
 $db = require __DIR__ . '/db.php';
 $params = require __DIR__ . '/params.php';

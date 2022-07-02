@@ -5,11 +5,13 @@
 
 namespace app\controllers\frontend;
 
+use app\controllers\BaseController;
+use app\entities\enum\Languages;
 use Yii;
-use yii\web\Controller;
 use app\entities\enum\UserTypes;
+use yii\web\Request;
 
-class FrontendController extends Controller
+class FrontendController extends BaseController
 {
     /**
      * layout
@@ -17,19 +19,4 @@ class FrontendController extends Controller
      * @var string
      */
     public $layout = 'frontend/main';
-
-    /**
-     * user_role
-     *
-     * @var string
-     */
-    public $user_role = UserTypes::USER;
-
-    public function __construct($id, $module, $config = [])
-    {
-        parent::__construct($id, $module, $config);
-        $this->user_role = !Yii::$app->user->isGuest
-            ? Yii::$app->user->identity->role
-            : UserTypes::USER;
-    }
 }
