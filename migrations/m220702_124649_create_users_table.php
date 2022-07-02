@@ -1,4 +1,7 @@
 <?php
+/**
+ * Astashenkov
+**/
 
 use yii\db\Migration;
 

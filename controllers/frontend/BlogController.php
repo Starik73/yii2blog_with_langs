@@ -1,47 +1,14 @@
 <?php
+/**
+ * Astashenkov
+**/
 
 namespace app\controllers\frontend;
 
-use Yii;
-use yii\filters\AccessControl;
 use yii\web\Controller;
-use yii\filters\VerbFilter;
 
-class BlogController extends Controller
+class BlogController extends FrontendController
 {
-    /**
-     * layout
-     *
-     * @var string
-     */
-    public $layout = 'frontend/main';
-
-    /**
-     * {@inheritdoc}
-     */
-    public function behaviors()
-    {
-        return [
-            'access' => [
-                'class' => AccessControl::class,
-                'only' => ['logout'],
-                'rules' => [
-                    [
-                        'actions' => ['logout'],
-                        'allow' => true,
-                        'roles' => ['@'],
-                    ],
-                ],
-            ],
-            'verbs' => [
-                'class' => VerbFilter::class,
-                'actions' => [
-                    'logout' => ['post'],
-                ],
-            ],
-        ];
-    }
-
     /**
      * Displays homepage.
      *
