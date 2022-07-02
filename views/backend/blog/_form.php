@@ -16,10 +16,8 @@ use yii\widgets\ActiveForm;
                 'method' => 'post',
                 'options' => ['class' => 'row']
         ]); ?>
-                <div class="hidden">
-            <?= $form->field($model, 'author_id')->textInput(['readonly' => true]) ?>
-        </div>
         <div class="hidden">
+            <?= $form->field($model, 'author_id')->textInput(['readonly' => true]) ?>
             <?= $form->field($model, 'created_at')->textInput([
                 'readonly' => true,
                 'value' => $model->isNewRecord
@@ -27,8 +25,6 @@ use yii\widgets\ActiveForm;
                     : $model->created_at
                 ])
             ?>
-        </div>
-        <div class="hidden">
             <?= $form->field($model, 'updated_at')->textInput([
                 'readonly' => true,
                 'value' => $model->isNewRecord
@@ -38,20 +34,28 @@ use yii\widgets\ActiveForm;
             ?>
         </div>
         <div class="w-100"></div>
-        <div class="col-5">
+        <div class="col-6">
             <?= $form->field($details_model, 'title')->textInput() ?>
         </div>
-        <div class="col-4">
+        <div class="col-3">
             <?= $form->field($model, 'alias')->textInput(['maxlength' => true]) ?>
         </div>
-        <div class="col-3">
+        <div class="col-2">
             <?= $form->field($model, 'status')->dropDownList(
                 ObjectStatuses::getSimpleStatusesList()
             ) ?>
         </div>
+        <div class="col-1">
+            <?= $form->field($details_model, 'lang_code')->textInput([
+                'readonly' => true,
+                'value' => $details_model->isNewRecord
+                    ? (defined('DESC_LANG') ? DESC_LANG : SITE_LANG)
+                    : $details_model->lang_code
+            ]) ?>
+        </div>
         <div class="w-100"></div>
         <div class="col-6">
-            <?= $form->field($details_model, 'body')->textArea() ?>
+            <?= $form->field($details_model, 'body')->textArea(['rows' => 10]) ?>
         </div>
         <div class="col-3">
             <?= $form->field($details_model, 'img_url')->textInput([[
@@ -60,20 +64,16 @@ use yii\widgets\ActiveForm;
                     ? '--'
                     : $details_model->img_url
             ]]) ?>
-            <img class="img-fluid" src="https://picsum.photos/400" alt="picsum">
+            <div class="card">
+                <div class="card-body">
+                    <img class="img-fluid" src="https://picsum.photos/400" alt="picsum">
+                </div>
+            </div>
         </div>
-        <div class="col-3">
-            <?= $form->field($details_model, 'lang_code')->textInput([
-                'readonly' => true,
-                'value' => $details_model->isNewRecord
-                    ? (defined('DESC_LANG') ? DESC_LANG : SITE_LANG)
-                    : $details_model->lang_code
-            ]) ?>
-        </div>
+        <div class="w-100"></div>
         <div class="col-2 form-group mx-left">
             <?= Html::submitButton('Save', ['class' => 'btn btn-success btn-block']) ?>
         </div>
     </div>
-
     <?php ActiveForm::end(); ?>
 </div>
