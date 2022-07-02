@@ -3,13 +3,13 @@
  * Astashenkov
 **/
 
-namespace app\controllers\frontend;
+namespace app\controllers\backend;
 
 use Yii;
 use yii\web\Controller;
 use app\entities\enum\UserTypes;
 
-class FrontendController extends Controller
+class BackendController extends Controller
 {
     /**
      * layout

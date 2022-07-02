@@ -20,6 +20,7 @@ echo Nav::widget([
         ['label' => 'Contact', 'url' => ['contact']],
         ['label' => 'SignUp', 'url' => ['signup'], 'visible' => Yii::$app->user->isGuest],
         ['label' => 'Blog', 'url' => ['/blog']],
+        ['label' => 'AdminPanel', 'url' => ['/adminpanel']],
         Yii::$app->user->isGuest
             ? (['label' => 'Login', 'url' => ['/login']])
             : (
