@@ -62,6 +62,13 @@ $config = [
             'enablePrettyUrl' => true,
             'rules' => $rules,
         ],
+        'view' => [
+            'theme' => [
+                'pathMap' => [
+                   '@app/views' => '@vendor/dmstr/yii2-adminlte-asset/example-views/yiisoft/yii2-advanced-app'
+                ],
+            ],
+        ],
     ],
     'params' => $params,
 ];
