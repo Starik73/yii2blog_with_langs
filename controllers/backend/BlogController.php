@@ -5,8 +5,11 @@ namespace app\controllers\backend;
 use app\models\Blog;
 use app\models\BlogsDetails;
 use app\models\BlogSearch;
+use app\models\UploadImage;
+use Yii;
 use yii\web\NotFoundHttpException;
 use yii\filters\VerbFilter;
+use yii\web\UploadedFile;
 
 /**
  * BlogController implements the CRUD actions for Blog model.
@@ -68,10 +71,15 @@ class BlogController extends BackendController
     public function actionCreate()
     {
         $model = new Blog();
+        $image_model = new UploadImage();
         $details_model = new BlogsDetails();
 
         if ($this->request->isPost) {
             if ($model->load($this->request->post()) && $model->save()) {
+                $image_model->image = UploadedFile::getInstance($image_model, 'image');
+                if (!empty($image_model->image)) {
+                    $details_model->img_url = $image_model->upload($model->id) ?? 'no_image';
+                }
                 $details_model->blog_id = $model->id;
                 if ($details_model->load($this->request->post()) && $details_model->save()) {
                     return $this->redirect(['view', 'id' => $details_model->blog_id]);
@@ -83,8 +91,9 @@ class BlogController extends BackendController
         }
 
         return $this->render('create', [
-            'model' => $model,
+            'model'         => $model,
             'details_model' => $details_model,
+            'image_model'   => $image_model
         ]);
     }
 
@@ -98,13 +107,32 @@ class BlogController extends BackendController
     public function actionUpdate($id)
     {
         $model = $this->findModel($id);
+        $image_model = new UploadImage();
+        $details_model = BlogsDetails::findOne(['blog_id' => $id]);
 
-        if ($this->request->isPost && $model->load($this->request->post()) && $model->save()) {
-            return $this->redirect(['view', 'id' => $model->id]);
+        if ($this->request->isPost) {
+            if ($model->load($this->request->post()) && $model->save()) {
+                $image_model->image = UploadedFile::getInstance($image_model, 'image');
+                if (!empty($image_model->image)) {
+                    $img_url = $image_model->upload($model->id);
+                }
+                if ($details_model->load($this->request->post())) {
+                    $details_model->blog_id = $model->id;
+                    $details_model->img_url = !empty($img_url) ? $img_url : 'no_image';
+                    if ($details_model->save()) {
+                        return $this->redirect(['view', 'id' => $details_model->blog_id]);
+                    }
+                }
+            }
+        } else {
+            $model->loadDefaultValues();
+            $details_model->loadDefaultValues();
         }
 
         return $this->render('update', [
-            'model' => $model,
+            'model'         => $model,
+            'details_model' => $details_model,
+            'image_model'   => $image_model
         ]);
     }
 

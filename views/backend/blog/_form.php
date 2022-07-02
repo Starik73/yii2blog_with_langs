@@ -3,18 +3,23 @@
 use app\entities\enum\ObjectStatuses;
 use yii\helpers\Html;
 use yii\widgets\ActiveForm;
+use mihaildev\ckeditor\CKEditor;
 
 /* @var $this yii\web\View */
-/* @var $model app\models\Blog */
+/* @var $model         app\models\Blog */
 /* @var $details_model app\models\BlogsDetails */
+/* @var $image_model   app\models\BlogsDetails */
 /* @var $form yii\widgets\ActiveForm */
 ?>
 
 <div class="blog-form">
     <div class="container-fluid">
         <?php $form = ActiveForm::begin([
-                'method' => 'post',
-                'options' => ['class' => 'row']
+                'method'  => 'post',
+                'options' => [
+                    'class'   => 'row',
+                    'enctype' => 'multipart/form-data'
+                ]
         ]); ?>
         <div class="hidden">
             <?= $form->field($model, 'author_id')->textInput(['readonly' => true]) ?>
@@ -54,8 +59,13 @@ use yii\widgets\ActiveForm;
             ]) ?>
         </div>
         <div class="w-100"></div>
-        <div class="col-6">
-            <?= $form->field($details_model, 'body')->textArea(['rows' => 10]) ?>
+        <div class="col-9">
+        <?= $form->field($details_model, 'body')->widget(CKEditor::class,[
+            'editorOptions' => [
+                'preset' => 'full', //разработанны стандартные настройки basic, standard, full данную возможность не обязательно использовать
+                'inline' => false,  //по умолчанию false
+            ],
+        ]); ?>
         </div>
         <div class="col-3">
             <?= $form->field($details_model, 'img_url')->textInput([[
@@ -65,9 +75,12 @@ use yii\widgets\ActiveForm;
                     : $details_model->img_url
             ]]) ?>
             <div class="card">
-                <div class="card-body">
-                    <img class="img-fluid" src="https://picsum.photos/400" alt="picsum">
-                </div>
+                <?php
+                    if (!$details_model->isNewRecord) {
+                        echo Html::img(Yii::$app->urlManager->createUrl($details_model->img_url));
+                    }
+                ?>
+                <?= $form->field($image_model, 'image')->fileInput() ?>
             </div>
         </div>
         <div class="w-100"></div>

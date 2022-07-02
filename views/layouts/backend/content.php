@@ -22,13 +22,13 @@ use yii\helpers\Url;
                 } ?>
             </h1>
         <?php } ?>
-
-        <?=
-        Breadcrumbs::widget(
-            [
-                'links' => isset($this->params['breadcrumbs']) ? $this->params['breadcrumbs'] : [],
-            ]
-        ) ?>
+    </section>
+    <section class="breadcrumbs">
+        <?= Breadcrumbs::widget([
+            'links' => isset($this->params['breadcrumbs'])
+                ? $this->params['breadcrumbs']
+                : [],
+        ]) ?>
     </section>
 
     <section class="content">
