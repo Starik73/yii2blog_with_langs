@@ -22,4 +22,21 @@ class ObjectStatuses
             self::DISABLED
         ];
     }
+
+    public static function getStatusesList()
+    {
+        return [
+            self::ACTIVE   => 'ACTIVE',
+            self::PENDING  => 'PENDING',
+            self::DISABLED => 'DISABLED'
+        ];
+    }
+
+    public static function getSimpleStatusesList()
+    {
+        return [
+            self::ACTIVE   => 'ACTIVE',
+            self::DISABLED => 'DISABLED'
+        ];
+    }
 }

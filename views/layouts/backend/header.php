@@ -2,6 +2,7 @@
 use yii\helpers\Html;
 use app\widgets\Alert;
 use yii\bootstrap4\Breadcrumbs;
+use yii\helpers\Url;
 
 /* @var $this \yii\web\View */
 /* @var $content string */
@@ -19,8 +20,16 @@ use yii\bootstrap4\Breadcrumbs;
 
         <div class="navbar-custom-menu">
 
-            <ul class="nav navbar-nav">
-
+            <ul class="nav navbar-nav mr-auto">
+                <li class="nav-item active">
+                    <a class="nav-link" href="<?=Yii::$app->homeUrl?>">Home <span class="sr-only">(current)</span></a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link" href="<?=Url::to('/blog');?>">blog</a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link" href="<?=Url::to(['blog/view', 'id' => 1]);?>">blog 1</a>
+                </li>
                 <!-- Messages: style can be found in dropdown.less-->
                 <li class="dropdown messages-menu">
                     <a href="#" class="dropdown-toggle" data-toggle="dropdown">

@@ -3,6 +3,7 @@
 namespace app\controllers\backend;
 
 use app\models\Blog;
+use app\models\BlogsDetails;
 use app\models\BlogSearch;
 use yii\web\NotFoundHttpException;
 use yii\filters\VerbFilter;
@@ -67,17 +68,23 @@ class BlogController extends BackendController
     public function actionCreate()
     {
         $model = new Blog();
+        $details_model = new BlogsDetails();
 
         if ($this->request->isPost) {
             if ($model->load($this->request->post()) && $model->save()) {
-                return $this->redirect(['view', 'id' => $model->id]);
+                $details_model->blog_id = $model->id;
+                if ($details_model->load($this->request->post()) && $details_model->save()) {
+                    return $this->redirect(['view', 'id' => $details_model->blog_id]);
+                }
             }
         } else {
             $model->loadDefaultValues();
+            $details_model->loadDefaultValues();
         }
 
         return $this->render('create', [
             'model' => $model,
+            'details_model' => $details_model,
         ]);
     }
 
