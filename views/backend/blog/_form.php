@@ -22,20 +22,24 @@ use mihaildev\ckeditor\CKEditor;
                 ]
         ]); ?>
         <div class="hidden">
-            <?= $form->field($model, 'author_id')->textInput(['readonly' => true]) ?>
+            <?= $form->field($model, 'author_id')->textInput([
+                'readonly' => true,
+                'value' => $model->isNewRecord
+                    ? Yii::$app->user->identity->id
+                    : $model->author_id
+            ]);
+            ?>
             <?= $form->field($model, 'created_at')->textInput([
                 'readonly' => true,
                 'value' => $model->isNewRecord
-                    ? time()
+                    ? TIME
                     : $model->created_at
-                ])
+            ]);
             ?>
             <?= $form->field($model, 'updated_at')->textInput([
                 'readonly' => true,
-                'value' => $model->isNewRecord
-                    ? time()
-                    : $model->updated_at
-                ])
+                'value' => TIME
+            ]);
             ?>
         </div>
         <div class="w-100"></div>

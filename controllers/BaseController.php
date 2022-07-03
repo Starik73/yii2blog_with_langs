@@ -29,6 +29,7 @@ class BaseController extends Controller
 
     public function __construct($id, $module, $config = [])
     {
+        defined ('TIME') or define ('TIME', time());
         parent::__construct($id, $module, $config);
         // Set user_role
         $this->user_role = !Yii::$app->user->isGuest

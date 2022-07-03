@@ -68,10 +68,10 @@ class BlogController extends BackendController
                         Yii::$app->session->setFlash('success', "New blog id:{$model->id} created");
                         return $this->redirect(['view', 'id' => $details_model->blog_id]);
                     }
+                } else {
+                    $model->loadDefaultValues();
+                    $details_model->loadDefaultValues();
                 }
-            } else {
-                $model->loadDefaultValues();
-                $details_model->loadDefaultValues();
             }
 
             return $this->render('create', [
@@ -113,10 +113,10 @@ class BlogController extends BackendController
                             return $this->redirect(['view', 'id' => $details_model->blog_id]);
                         }
                     }
+                } else {
+                    $model->loadDefaultValues();
+                    $details_model->loadDefaultValues();
                 }
-            } else {
-                $model->loadDefaultValues();
-                $details_model->loadDefaultValues();
             }
 
             return $this->render('update', [
