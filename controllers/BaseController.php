@@ -9,7 +9,7 @@ use app\entities\enum\Languages;
 use Yii;
 use yii\web\Controller;
 use app\entities\enum\UserTypes;
-use yii\web\Request;
+use app\entities\helpers\LangCode;
 
 class BaseController extends Controller
 {
@@ -37,14 +37,6 @@ class BaseController extends Controller
             : UserTypes::USER;
 
         // Set language
-        $exist = false;
-        if (!empty($lang_code = (new Request())->get('sl')) && $lang_code != Languages::RU) {
-            $languages = Languages::getAllLanguages();
-            if (in_array($lang_code, $languages)) {
-                $exist = true;
-            }
-        }
-        $this->lang_code = $exist ? $lang_code : Languages::RU;
-        defined('DESC_LANG') or define ('DESC_LANG', $this->lang_code);
+        LangCode::setLangCode();
     }
 }

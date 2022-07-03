@@ -72,16 +72,16 @@ use mihaildev\ckeditor\CKEditor;
         ]); ?>
         </div>
         <div class="col-3">
-            <?= $form->field($details_model, 'img_url')->textInput([[
+            <?= $form->field($model, 'img_url')->textInput([[
                 'readonly' => true,
-                'value' => $details_model->isNewRecord
+                'value' => $model->isNewRecord
                     ? '--'
-                    : $details_model->img_url
+                    : $model->img_url
             ]]) ?>
             <div class="card">
                 <?php
                     if (!$details_model->isNewRecord) {
-                        echo Html::img(Yii::$app->urlManager->createUrl($details_model->img_url));
+                        echo Html::img(Yii::$app->urlManager->createUrl($model->img_url));
                     }
                 ?>
                 <?= $form->field($image_model, 'image')->fileInput() ?>

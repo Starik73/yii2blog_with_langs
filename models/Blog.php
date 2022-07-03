@@ -13,6 +13,7 @@ use yii\db\ActiveRecord;
  * @property string $alias
  * @property int $author_id
  * @property string $status
+ * @property string|null $img_url
  * @property int $created_at
  * @property int $updated_at
  *
@@ -48,7 +49,7 @@ class Blog extends ActiveRecord
         return [
             [['alias', 'created_at', 'updated_at'], 'required'],
             [['author_id', 'created_at', 'updated_at'], 'integer'],
-            [['alias'], 'string', 'max' => 255],
+            [['alias', 'img_url'], 'string', 'max' => 255],
             [['status'], 'string', 'max' => 1],
             [['alias'], 'unique'],
             [['author_id'], 'exist', 'skipOnError' => true, 'targetClass' => User::class, 'targetAttribute' => ['author_id' => 'id']],
@@ -65,6 +66,7 @@ class Blog extends ActiveRecord
             'alias' => Yii::t('app', 'Alias'),
             'author_id' => Yii::t('app', 'Author ID'),
             'status' => Yii::t('app', 'Status'),
+            'img_url' => Yii::t('app', 'Img Url'),
             'created_at' => Yii::t('app', 'Created At'),
             'updated_at' => Yii::t('app', 'Updated At'),
         ];

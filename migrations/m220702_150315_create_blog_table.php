@@ -20,6 +20,7 @@ class m220702_150315_create_blog_table extends Migration
             'alias'      => $this->string()->notNull()->unique(),
             'author_id'  => $this->integer()->notNull()->defaultValue(1),
             'status'     => $this->string(1)->notNull()->defaultValue('A'),
+            'img_url'    => $this->string(),
             'created_at' => $this->integer()->notNull(),
             'updated_at' => $this->integer()->notNull(),
         ]);

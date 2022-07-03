@@ -20,7 +20,6 @@ class m220702_151456_create_blogs_details_table extends Migration
             'blog_id'   => $this->integer()->notNull(),
             'lang_code' => $this->string()->notNull()->defaultValue('ru'),
             'title'     => $this->string(),
-            'img_url'   => $this->string(),
             'body'      => $this->text(),
         ]);
 

@@ -2,6 +2,7 @@
 
 namespace app\controllers\backend;
 
+use app\entities\enum\Languages;
 use app\entities\enum\UserTypes;
 use app\models\Blog;
 use app\models\BlogsDetails;
@@ -58,13 +59,26 @@ class BlogController extends BackendController
             $details_model = new BlogsDetails();
 
             if ($this->request->isPost) {
-                if ($model->load($this->request->post()) && $model->save()) {
+                if ($model->load($this->request->post()) && $details_model->load($this->request->post())) {
                     $image_model->image = UploadedFile::getInstance($image_model, 'image');
                     if (!empty($image_model->image)) {
-                        $details_model->img_url = $image_model->upload($model->id) ?? 'no_image';
+                        $model->img_url = $image_model->upload($model->alias) ?? 'no_image';
                     }
-                    $details_model->blog_id = $model->id;
-                    if ($details_model->load($this->request->post()) && $details_model->save()) {
+                    if ($model->save()) {
+                        $details_model->blog_id = $model->id;
+                        $details_model->lang_code = DESC_LANG;
+                        $languages = Languages::getAllLanguages();
+                        foreach ($languages as $lang_code) {
+                            if ($lang_code != DESC_LANG) {
+                                $lang_model = new BlogsDetails();
+                                $lang_model->blog_id   = $details_model->blog_id;
+                                $lang_model->lang_code = $lang_code;
+                                $lang_model->title     = $details_model->title;
+                                $lang_model->body      = $details_model->body;
+                                $lang_model->save();
+                            }
+                        }
+                        $details_model->save();
                         Yii::$app->session->setFlash('success', "New blog id:{$model->id} created");
                         return $this->redirect(['view', 'id' => $details_model->blog_id]);
                     }
@@ -83,7 +97,6 @@ class BlogController extends BackendController
             Yii::$app->session->setFlash('warning', 'Not admin or author');
             return $this->redirect(['index']);
         }
-
     }
 
     /**
@@ -98,16 +111,17 @@ class BlogController extends BackendController
         if ($this->user_role == UserTypes::ADMIN || $this->user_role == UserTypes::AUTHOR) {
             $model = $this->findModel($id);
             $image_model = new UploadImage();
-            $details_model = BlogsDetails::findOne(['blog_id' => $id]);
-
+            $details_model = BlogsDetails::findOne([
+                'blog_id'   => $id,
+                'lang_code' => DESC_LANG
+            ]);
             if ($this->request->isPost) {
-                if ($model->load($this->request->post()) && $model->save()) {
+                if ($model->load($this->request->post())) {
                     $image_model->image = UploadedFile::getInstance($image_model, 'image');
                     if (!empty($image_model->image)) {
-                        $img_url = $image_model->upload($model->id);
+                        $model->img_url = $image_model->upload($model->id) ?? 'no_image';
                     }
-                    if ($details_model->load($this->request->post())) {
-                        $details_model->img_url = !empty($img_url) ? $img_url : 'no_image';
+                    if ($details_model->load($this->request->post()) && $model->save()) {
                         if ($details_model->save()) {
                             Yii::$app->session->setFlash('success', "Blog id:{$model->id} updated");
                             return $this->redirect(['view', 'id' => $details_model->blog_id]);

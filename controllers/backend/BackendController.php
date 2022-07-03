@@ -10,6 +10,9 @@ use Yii;
 use yii\filters\AccessControl;
 use yii\filters\VerbFilter;
 
+/**
+ * BackendController
+ */
 class BackendController extends BaseController
 {
     /**

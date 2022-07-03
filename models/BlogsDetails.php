@@ -11,7 +11,6 @@ use Yii;
  * @property int $blog_id
  * @property string $lang_code
  * @property string|null $title
- * @property string|null $img_url
  * @property string|null $body
  *
  * @property Blog $blog
@@ -35,7 +34,7 @@ class BlogsDetails extends \yii\db\ActiveRecord
             [['blog_id'], 'required'],
             [['blog_id'], 'integer'],
             [['body'], 'string'],
-            [['lang_code', 'title', 'img_url'], 'string', 'max' => 255],
+            [['lang_code', 'title'], 'string', 'max' => 255],
             [['blog_id', 'lang_code'], 'unique', 'targetAttribute' => ['blog_id', 'lang_code']],
             [['blog_id'], 'exist', 'skipOnError' => true, 'targetClass' => Blog::class, 'targetAttribute' => ['blog_id' => 'id']],
         ];
@@ -51,7 +50,6 @@ class BlogsDetails extends \yii\db\ActiveRecord
             'blog_id' => Yii::t('app', 'Blog ID'),
             'lang_code' => Yii::t('app', 'Lang Code'),
             'title' => Yii::t('app', 'Title'),
-            'img_url' => Yii::t('app', 'Img Url'),
             'body' => Yii::t('app', 'Body'),
         ];
     }
