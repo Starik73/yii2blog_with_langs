@@ -2,13 +2,13 @@
 
 namespace app\controllers\backend;
 
+use app\entities\enum\UserTypes;
 use app\models\Blog;
 use app\models\BlogsDetails;
 use app\models\BlogSearch;
 use app\models\UploadImage;
 use Yii;
 use yii\web\NotFoundHttpException;
-use yii\filters\VerbFilter;
 use yii\web\UploadedFile;
 
 /**
@@ -16,24 +16,6 @@ use yii\web\UploadedFile;
  */
 class BlogController extends BackendController
 {
-    /**
-     * @inheritDoc
-     */
-    public function behaviors()
-    {
-        return array_merge(
-            parent::behaviors(),
-            [
-                'verbs' => [
-                    'class' => VerbFilter::class,
-                    'actions' => [
-                        'delete' => ['POST'],
-                    ],
-                ],
-            ]
-        );
-    }
-
     /**
      * Lists all Blog models.
      *
@@ -70,31 +52,38 @@ class BlogController extends BackendController
      */
     public function actionCreate()
     {
-        $model = new Blog();
-        $image_model = new UploadImage();
-        $details_model = new BlogsDetails();
+        if ($this->user_role == UserTypes::ADMIN || $this->user_role == UserTypes::AUTHOR) {
+            $model = new Blog();
+            $image_model = new UploadImage();
+            $details_model = new BlogsDetails();
 
-        if ($this->request->isPost) {
-            if ($model->load($this->request->post()) && $model->save()) {
-                $image_model->image = UploadedFile::getInstance($image_model, 'image');
-                if (!empty($image_model->image)) {
-                    $details_model->img_url = $image_model->upload($model->id) ?? 'no_image';
+            if ($this->request->isPost) {
+                if ($model->load($this->request->post()) && $model->save()) {
+                    $image_model->image = UploadedFile::getInstance($image_model, 'image');
+                    if (!empty($image_model->image)) {
+                        $details_model->img_url = $image_model->upload($model->id) ?? 'no_image';
+                    }
+                    $details_model->blog_id = $model->id;
+                    if ($details_model->load($this->request->post()) && $details_model->save()) {
+                        Yii::$app->session->setFlash('success', "New blog id:{$model->id} created");
+                        return $this->redirect(['view', 'id' => $details_model->blog_id]);
+                    }
                 }
-                $details_model->blog_id = $model->id;
-                if ($details_model->load($this->request->post()) && $details_model->save()) {
-                    return $this->redirect(['view', 'id' => $details_model->blog_id]);
-                }
+            } else {
+                $model->loadDefaultValues();
+                $details_model->loadDefaultValues();
             }
+
+            return $this->render('create', [
+                'model'         => $model,
+                'details_model' => $details_model,
+                'image_model'   => $image_model
+            ]);
         } else {
-            $model->loadDefaultValues();
-            $details_model->loadDefaultValues();
+            Yii::$app->session->setFlash('warning', 'Not admin or author');
+            return $this->redirect(['index']);
         }
 
-        return $this->render('create', [
-            'model'         => $model,
-            'details_model' => $details_model,
-            'image_model'   => $image_model
-        ]);
     }
 
     /**
@@ -106,34 +95,39 @@ class BlogController extends BackendController
      */
     public function actionUpdate($id)
     {
-        $model = $this->findModel($id);
-        $image_model = new UploadImage();
-        $details_model = BlogsDetails::findOne(['blog_id' => $id]);
+        if ($this->user_role == UserTypes::ADMIN || $this->user_role == UserTypes::AUTHOR) {
+            $model = $this->findModel($id);
+            $image_model = new UploadImage();
+            $details_model = BlogsDetails::findOne(['blog_id' => $id]);
 
-        if ($this->request->isPost) {
-            if ($model->load($this->request->post()) && $model->save()) {
-                $image_model->image = UploadedFile::getInstance($image_model, 'image');
-                if (!empty($image_model->image)) {
-                    $img_url = $image_model->upload($model->id);
-                }
-                if ($details_model->load($this->request->post())) {
-                    $details_model->blog_id = $model->id;
-                    $details_model->img_url = !empty($img_url) ? $img_url : 'no_image';
-                    if ($details_model->save()) {
-                        return $this->redirect(['view', 'id' => $details_model->blog_id]);
+            if ($this->request->isPost) {
+                if ($model->load($this->request->post()) && $model->save()) {
+                    $image_model->image = UploadedFile::getInstance($image_model, 'image');
+                    if (!empty($image_model->image)) {
+                        $img_url = $image_model->upload($model->id);
+                    }
+                    if ($details_model->load($this->request->post())) {
+                        $details_model->img_url = !empty($img_url) ? $img_url : 'no_image';
+                        if ($details_model->save()) {
+                            Yii::$app->session->setFlash('success', "Blog id:{$model->id} updated");
+                            return $this->redirect(['view', 'id' => $details_model->blog_id]);
+                        }
                     }
                 }
+            } else {
+                $model->loadDefaultValues();
+                $details_model->loadDefaultValues();
             }
-        } else {
-            $model->loadDefaultValues();
-            $details_model->loadDefaultValues();
-        }
 
-        return $this->render('update', [
-            'model'         => $model,
-            'details_model' => $details_model,
-            'image_model'   => $image_model
-        ]);
+            return $this->render('update', [
+                'model'         => $model,
+                'details_model' => $details_model,
+                'image_model'   => $image_model
+            ]);
+        } else {
+            Yii::$app->session->setFlash('warning', 'Not admin or author');
+            return $this->redirect(['index']);
+        }
     }
 
     /**

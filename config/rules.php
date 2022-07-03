@@ -12,6 +12,7 @@ return [
     'login'                          => 'frontend/site/login',
     'logout'                         => 'frontend/site/logout',
     'signup'                         => 'frontend/site/signup',
+    'site/login'                     => 'backend/admin/login',
     // Blog
     '/blog'                          => 'frontend/blog/list',
     '/blog/post/<id:\d+>'            => 'frontend/blog/post',
